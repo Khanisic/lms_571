@@ -1,36 +1,17 @@
 import LeftBar from "@/app/dashboard/_components/LeftBar";
-import { Metadata } from "next";
-import dbms_img from './_images/571.svg'
-import cns_img from './_images/cs534.svg'
-import spm_img from './_images/591.svg'
-
-
 import Image from "next/image";
-import CapIcon from "./_components/CapIcon";
-import BookIcon from "./_components/BookIcon";
-import SpeakerIcon from "./_components/SpeakerIcon";
-import Todo from "./_components/Todo";
+import CapIcon from "../_components/CapIcon";
+import BookIcon from "../_components/BookIcon";
+import SpeakerIcon from "../_components/SpeakerIcon";
+import Todo from "../_components/Todo";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { fetchUserCourses } from "@/lib/actions/user.action";
 
-export const metadata: Metadata = {
-    title: "Dashboard",
-    description: "CS 571 Project",
-};
-const dummyDataForHW4 = [
-    {
-        "course": "CS 571 Database Management Systems",
-        "img": dbms_img
-    },
-    {
-        "course": "CS 535 Computer Network and Security",
-        "img": cns_img
-    },
-    {
-        "course": "CS 591 Software Project Management",
-        "img": spm_img
-    },
-]
-const Dashboard = () => {
+const Dashboard = async ({ params }: { params: { dashboard: string } }) => {
+    console.log(params.dashboard)
+    const courses = await fetchUserCourses(params.dashboard)
+
     return (
         <div className="bg-darker w-screen h-screen flex justify-items-stretch">
             <div className="w-1/12 h-full">
@@ -40,11 +21,11 @@ const Dashboard = () => {
                 <p className="text-white font-funky text-[40px]">Dashboard</p>
                 <div className="flex gap-6 flex-wrap">
                     {
-                        dummyDataForHW4.map((course, index) => {
+                        courses && courses.map((course, index) => {
                             return (
-                                <Link key={index}  href={"/course"}>
+                                <Link key={index} href={`/course/${(course._id)}/${params.dashboard}/`}>
                                     <div className="w-[250px] bg-dark flex flex-col justify-center items-center rounded-2xl gap-4 px-6 py-5">
-                                        <p className="text-white font-funky text-xl text-center">{course.course}</p>
+                                        <p className="text-white font-funky text-xl text-center">{course.courseID} {course.courseTitle} : {course.section}</p>
                                         <Image alt="cs571" src={course.img} width={200} height={100} />
                                         <div className="flex gap-5 w-full justify-center">
                                             <CapIcon />

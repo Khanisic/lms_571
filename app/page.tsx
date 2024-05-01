@@ -1,16 +1,27 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+"use client"
+import { fetchUserDetails } from "@/lib/actions/user.action";
 import "./globals.css";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-
-export const metadata: Metadata = {
-  title: "Bradley Learning Management System",
-  description: "CS 571 Project",
-};
 
 export default function SignIn() {
+  const [userID, setuserID] = useState("")
+  const router = useRouter()
+  console.log(userID)
+  const login = () => {
+
+    fetchUserDetails(userID).then((res: any) => {
+      console.log(userID)
+      console.log(res)
+      router.push(`/dashboard/${res.id}`)
+    })
+
+
+  }
+
   return (
     <div className="bg-darker w-screen h-screen flex gap-20 items-center justify-center">
       <div>
@@ -24,7 +35,7 @@ export default function SignIn() {
         <p className="font-funky text-white text-3xl self-center">Login</p>
         <div className="flex flex-col w-[200px]">
           <label className="text-white font-funky">ID:</label>
-          <input className="outline-none bg-darker rounded-md px-2 py-2 font-chill text-white" type="text" />
+          <input onChange={(e) => { setuserID(e.target.value) }} className="outline-none bg-darker rounded-md px-2 py-2 font-chill text-white" type="text" />
         </div>
 
         <div className="flex flex-col w-[200px]">
@@ -32,9 +43,9 @@ export default function SignIn() {
           <input className="outline-none bg-darker rounded-md px-2 py-2 font-chill text-white" type="password" />
         </div>
 
-        <Link href={"/dashboard"}>
-          <div className=" self-center bg-secondary font-funky px-8 py-1 text-white text-xl rounded-md">Login</div>
-        </Link>
+
+        <div onClick={() => login()} className=" self-center cursor-pointer bg-secondary font-funky px-8 py-1 text-center text-white text-xl rounded-md hover:bg-blood transition-all duration-300 ease-in-out">Login</div>
+
         <p className="text-white font-funky cursor-pointer">Forgot your password?</p>
       </div>
     </div>
